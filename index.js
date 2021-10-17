@@ -139,7 +139,7 @@ let retweetLikeMessages = async function(messages, rt, like) {
       }
     };
     console.log('Completed retweetLikeMessages function');
-    console.log(interactions.count + ' status interactions');
+    console.log(interactions.length + ' status interactions');
   } catch (err) {
     console.error("Err:", err);
   }
@@ -149,8 +149,8 @@ let collectMessages = async function() {
   let accounts = await getAccountsFromList(process.env.LIST_ID);
   let ids = await getUserIdsFromAccounts(accounts);
   let messages = await collectMessagesFromUsers(ids);
-  await retweetLikeMessages(messages, true, true);
 }
 
-collectMessages();
+let tweets = await collectMessages();
+await retweetLikeMessages(tweets, true, true);
 

@@ -120,28 +120,26 @@ let findFirstFilteredUserMessage = function(messages) {
 }
 
 let retweetLikeMessages = async function(messages, rt, like) {
-  responses = [];
   try{
+    let interactions = [];
     for(message of messages) {
       if (rt) {
         let responseRT = await Twitter.post("statuses/retweet/:id", {
           id: message.id_str
         });
-        responses.push(responseRT);
-        console.log("Successfully retweeted");
-        console.log(responseRT);
+        interactions.push(responseRT);
+        console.log("Successfully retweeted: " + message.text);
       }
       if (like) {
         let responseLike = await Twitter.post("favorites/create", {
           id: message.id_str
         });
-        responses.push(responsLike);
-        console.log("Successfully liked");
-        console.log(responseLike);
+        interactions.push(responseLike);
+        console.log("Successfully liked: " + message.text);
       }
     };
     console.log('Completed retweetLikeMessages function');
-    console.log(responses);
+    console.log(interactions.count + ' status interactions');
   } catch (err) {
     console.error("Err:", err);
   }
@@ -151,9 +149,7 @@ let collectMessages = async function() {
   let accounts = await getAccountsFromList(process.env.LIST_ID);
   let ids = await getUserIdsFromAccounts(accounts);
   let messages = await collectMessagesFromUsers(ids);
-  let retweetAction = await retweetLikeMessages(messages, true, true);
-  console.log(messages);
-  await console.log('Messages collected');
+  await retweetLikeMessages(messages, true, true);
 }
 
 collectMessages();

@@ -10,84 +10,145 @@ const config = {
 };
 const Twitter = new twit(config);
 
-const MAX_RT_COUNT = 1;
+// const MAX_RT_COUNT = 1;
 
-const USERS = [
-  "15057943", // moma
-  "14803372", // saam
-  "5225991", // tate
-  "22009731", // design museum
-  "81783051", // artsy
-  "158865339", // fastcodesign
-  "20457080", // nga
-  "24691376", // vangoghmuseum
-  "17057271", // themet
-  "16517711", // whitneymuseum
-  "18201801", // interior design
-  "19038849", // how design
-  "2991948728" // thenewpainting
+const HASHTAGS = [
+
 ];
 
-const getUserOfTheDay = () => {
-  let date = new Date();
-  let dayOfMonth = date.getDate();
-  let pickUserIndex = dayOfMonth % USERS.length;
+const KEYWORDS = [
+  'new debriefing',
+  'new episode',
+  'clip'
+];
 
-  return USERS[pickUserIndex];
-};
+const EXCLUDE_REPLIES = true;
+const INCLUDE_RTS = 0;
 
-let retweetTags = async function() {
+let getAccountsFromList = async function(listId) {
+  let returnLimit = 50;
+  let resultsCursor = null;
+  let userData = [];
+  let allDataIsReturned = false;
   try {
-    const { data } = await Twitter.get("search/tweets", {
-      q: "#art, #painting",
-      result_type: "mixed",
-      lang: "en"
-    });
-
-    const statuses = data.statuses.slice(0, MAX_RT_COUNT);
-
-    // loop through the first n returned tweets
-    for (const status of statuses) {
-      // the post action
-      const response = await Twitter.post("statuses/retweet/:id", {
-        id: status.id_str
+    do {
+      let { data } = await Twitter.get('lists/members', {
+        list_id: listId,
+        count: returnLimit,
+        ...(resultsCursor && { cursor: resultsCursor })
       });
-
-      if (response) {
-        console.log("Successfully retweeted");
+      userData = userData.concat(data.users);
+      resultsCursor = data.next_cursor;
+      if(resultsCursor == 0) {
+        allDataIsReturned = true;
       }
-    }
+    } while (!allDataIsReturned);
+    return userData;
   } catch (err) {
-    // catch all log if the search/retweet could not be executed
     console.error("Err:", err);
   }
-};
+}
 
-// retweetTags();
+let getUserIdsFromAccounts = async function(accounts) {
+  return await accounts.map(account => account.id_str);
+}
 
-let retweetUsers = async function() {
+let collectMessagesFromUsers = async function(userIds) {
+  let messages = [];
+  for(let id of userIds) {
+    let newMessages  = await getUserTimeline(id);
+    // let firstFilteredMessage = findFirstFilteredUserMessage(newMessages);
+    // if (firstFilteredMessage) {
+    //   messages = messages.concat(firstFilteredMessage);
+
+    // }
+    messages = messages.concat(newMessages);
+    messages = await filterUserMessages(messages);
+  };
+  return messages;
+}
+
+let getUserTimeline = async function(userId) {
   try {
-    const { data } = await Twitter.get("users/show", {
-      user_id: getUserOfTheDay()
+    let { data } = await Twitter.get('statuses/user_timeline', {
+      user_id: userId,
+      count: 20,
+      trim_user: 1,
+      exclude_replies: EXCLUDE_REPLIES,
+      include_rts: INCLUDE_RTS
     });
-    const status = data.status;
-    // make sure tweet isn't in reply to another user
-    if (status.in_reply_to_status_id == null) {
-      const response = await Twitter.post("statuses/retweet/:id", {
-        id: status.id_str
-      });
-      if (response) {
-        console.log("Successfully retweeted");
-      }
-    }
+    return data;
   } catch (err) {
-    // catch all log if the search/retweet could not be executed
     console.error("Err:", err);
   }
-};
+}
 
-retweetUsers();
+let filterUserMessages = async function(messages) {
+  filteredMessages = [];
+  messages.forEach(message => {
+    if ( message.is_quote_status
+        || message.retweeted
+        || message.favorited
+        || message.in_reply_to_status_id != null
+    ) {
+      return;
+    }
+    for (let j=0; j < KEYWORDS.length; j++) {
+      if (message.text.toLowerCase().includes(KEYWORDS[j].toLowerCase())) {
+        filteredMessages.push(message);
+        break;
+      }
+    }
+  });
+  return filteredMessages;
+}
+
+let findFirstFilteredUserMessage = function(messages) {
+  for (let i=0; i < messages.length; i++) {
+    if ( messages[i].is_quote_status
+      || messages[i].retweeted
+      || messages[i].favorited
+      || messages[i].in_reply_to_status_id != null
+    ) {
+      continue;
+    }
+    for (let j=0; j < KEYWORDS.length; j++) {
+      if (messages[i].text.toLowerCase().includes(KEYWORDS[j].toLowerCase())) {
+        return messages[i];
+      }
+    }
+    return null;
+  }
+}
+
+let retweetLikeMessages = async function(messages, rt, like) {
+  for(message of messages) {
+    if (rt) {
+      let responseRT = await Twitter.post("statuses/retweet/:id", {
+        id: message.id_str
+      });
+      console.log("Successfully retweeted");
+      console.log(responseRT);
+    }
+    if (like) {
+      let responseLike = await Twitter.post("favorites/create", {
+        id: message.id_str
+      });
+      console.log("Successfully liked");
+      console.log(responseLike);
+    }
+  };
+}
+
+let collectMessages = async function() {
+  let accounts = await getAccountsFromList(process.env.LIST_ID);
+  let ids = await getUserIdsFromAccounts(accounts);
+  let messages = await collectMessagesFromUsers(ids);
+  let retweetAction = await retweetLikeMessages(messages, true, true);
+}
+
+collectMessages();
 
 setInterval(function() {
-  http.get("https://twitterbot-retweet.herokuapp.com/");
+  //http.get("https://twitterbot-retweet.herokuapp.com/");
 }, 86400000); // checks app every 24 hours

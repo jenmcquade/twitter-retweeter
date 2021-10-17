@@ -122,22 +122,31 @@ let findFirstFilteredUserMessage = function(messages) {
 }
 
 let retweetLikeMessages = async function(messages, rt, like) {
-  for(message of messages) {
-    if (rt) {
-      let responseRT = await Twitter.post("statuses/retweet/:id", {
-        id: message.id_str
-      });
-      console.log("Successfully retweeted");
-      console.log(responseRT);
-    }
-    if (like) {
-      let responseLike = await Twitter.post("favorites/create", {
-        id: message.id_str
-      });
-      console.log("Successfully liked");
-      console.log(responseLike);
-    }
-  };
+  responses = [];
+  try{
+    for(message of messages) {
+      if (rt) {
+        let responseRT = await Twitter.post("statuses/retweet/:id", {
+          id: message.id_str
+        });
+        responses.push(responseRT);
+        console.log("Successfully retweeted");
+        console.log(responseRT);
+      }
+      if (like) {
+        let responseLike = await Twitter.post("favorites/create", {
+          id: message.id_str
+        });
+        responses.push(responsLike);
+        console.log("Successfully liked");
+        console.log(responseLike);
+      }
+    };
+    console.log('Completed retweetLikeMessages function');
+    console.log(responses);
+  } catch (err) {
+    console.error("Err:", err);
+  }
 }
 
 let collectMessages = async function() {
@@ -145,10 +154,8 @@ let collectMessages = async function() {
   let ids = await getUserIdsFromAccounts(accounts);
   let messages = await collectMessagesFromUsers(ids);
   let retweetAction = await retweetLikeMessages(messages, true, true);
+  await console.log('Messages collected');
 }
 
 collectMessages();
 
-setInterval(function() {
-  //http.get("https://twitterbot-retweet.herokuapp.com/");
-}, 86400000); // checks app every 24 hours

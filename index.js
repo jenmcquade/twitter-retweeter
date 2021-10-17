@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const http = require("http");
 const twit = require("twit");
 const config = {
   consumer_key: process.env.CONSUMER_KEY,
@@ -10,23 +9,10 @@ const config = {
 };
 const Twitter = new twit(config);
 
-// const MAX_RT_COUNT = 1;
-
-const HASHTAGS = [
-
-];
-
-const KEYWORDS = [
-  'new debriefing',
-  'new episode',
-  'clip'
-];
-
-const EXCLUDE_REPLIES = true;
-const INCLUDE_RTS = 0;
+const KEYWORDS = process.env.KEYWORDS.split(",").map(keyword => keyword.trim());
 
 let getAccountsFromList = async function(listId) {
-  let returnLimit = 50;
+  let returnLimit = 100;
   let resultsCursor = null;
   let userData = [];
   let allDataIsReturned = false;
@@ -57,6 +43,9 @@ let collectMessagesFromUsers = async function(userIds) {
   let messages = [];
   for(let id of userIds) {
     let newMessages  = await getUserTimeline(id);
+    /**
+    *  Use this code block if we only want the first message
+    **/
     // let firstFilteredMessage = findFirstFilteredUserMessage(newMessages);
     // if (firstFilteredMessage) {
     //   messages = messages.concat(firstFilteredMessage);
@@ -74,8 +63,8 @@ let getUserTimeline = async function(userId) {
       user_id: userId,
       count: 20,
       trim_user: 1,
-      exclude_replies: EXCLUDE_REPLIES,
-      include_rts: INCLUDE_RTS
+      exclude_replies: process.env.EXCLUDE_REPLIES,
+      include_rts: process.env.INCLUDE_RETWEETS
     });
     return data;
   } catch (err) {
@@ -84,9 +73,17 @@ let getUserTimeline = async function(userId) {
 }
 
 let filterUserMessages = async function(messages) {
-  filteredMessages = [];
+  let filteredMessages = [];
+  let includeQuoteTweets = (process.env.INCLUDE_QUOTE_TWEETS === 'true');
+  let now = new Date();
+  let last = new Date(now.getTime() - (parseInt(process.env.FROM_DAYS_AGO) * 24 * 60 * 60 * 1000));
   messages.forEach(message => {
-    if ( message.is_quote_status
+    let quoteStatusMatches = message.is_quote_status === includeQuoteTweets;
+    let messageTime = new Date(Date.parse(message.created_at));
+    if (last >= messageTime) {
+      return;
+    }
+    if ( !quoteStatusMatches
         || message.retweeted
         || message.favorited
         || message.in_reply_to_status_id != null
@@ -94,7 +91,8 @@ let filterUserMessages = async function(messages) {
       return;
     }
     for (let j=0; j < KEYWORDS.length; j++) {
-      if (message.text.toLowerCase().includes(KEYWORDS[j].toLowerCase())) {
+      let messageText = message.text.toLowerCase();
+      if (messageText.includes(KEYWORDS[j].toLowerCase())) {
         filteredMessages.push(message);
         break;
       }
@@ -153,7 +151,8 @@ let collectMessages = async function() {
   let accounts = await getAccountsFromList(process.env.LIST_ID);
   let ids = await getUserIdsFromAccounts(accounts);
   let messages = await collectMessagesFromUsers(ids);
-  let retweetAction = await retweetLikeMessages(messages, true, true);
+  //let retweetAction = await retweetLikeMessages(messages, true, true);
+  console.log(messages);
   await console.log('Messages collected');
 }
 

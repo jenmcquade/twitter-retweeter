@@ -151,7 +151,7 @@ let collectMessages = async function() {
   let accounts = await getAccountsFromList(process.env.LIST_ID);
   let ids = await getUserIdsFromAccounts(accounts);
   let messages = await collectMessagesFromUsers(ids);
-  //let retweetAction = await retweetLikeMessages(messages, true, true);
+  let retweetAction = await retweetLikeMessages(messages, true, true);
   console.log(messages);
   await console.log('Messages collected');
 }

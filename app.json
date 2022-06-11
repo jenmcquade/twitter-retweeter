@@ -3,7 +3,7 @@
     "description": "A Twitter bot that retweets or likes messages from list users in the last n days",
 	"website": "https://github.com/jenmcquade/twitter-retweeter",
     "repository": "https://github.com/jenmcquade/twitter-retweeter",
-    "logo": "https://github.com/jenmcquade/twitter-retweeter/img/twitter-logo.png",
+    "logo": "https://github.com/jenmcquade/twitter-retweeter/raw/main/img/twitter-logo.png",
     "keywords": ["node", "twitter", "bot", "bots", "messaging", "productivity"],
 	"addons": [
 		"scheduler"

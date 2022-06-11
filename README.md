@@ -8,6 +8,7 @@ This is a twitter bot that will retweet and/or like messages from Twitter users 
 
 # Easy Installation via Heroku
 > Note: When configuring Twitter variables, the first two are your keys for Step 5.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 After the app is set up, go to the app's overview screen and click on the scheduler addon. Add a new task, type in "node index.js" and set the frequency you'd like the bot to update to Twitter to. I recommend only scheduling for twice a day, to cut down on Heroku Dyno run time and help to not give the impression to your Twitter followers that your account itself is a bot.

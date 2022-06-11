@@ -1,70 +1,73 @@
 {
 	"name": "Twitter Retweeter Bot",
-    "description": "A Twitter bot that retweets or likes messages from list users in the last n days",
+	"description": "A Twitter bot that retweets or likes messages from list users in the last n days",
 	"website": "https://github.com/jenmcquade/twitter-retweeter",
 	"repository": "https://github.com/jenmcquade/twitter-retweeter",
-    "logo": "https://github.com/jenmcquade/twitter-retweeter/raw/main/img/twitter-logo.png",
-    "keywords": ["node", "twitter", "bot", "bots", "messaging", "productivity"],
+	"logo": "https://github.com/jenmcquade/twitter-retweeter/raw/main/img/twitter-logo.png",
+	"keywords": [
+		"node",
+		"twitter",
+		"bot",
+		"bots",
+		"messaging",
+		"productivity"
+	],
+	"image": "heroku/nodejs",
 	"addons": [
 		"scheduler"
 	],
-    "env": {
-        "CONSUMER_KEY": {
-            "description": "Twitter API Key (Consumer Key)",
-            "value": ""
-        },
+	"env": {
+		"CONSUMER_KEY": {
+			"description": "Twitter API Key (Consumer Key)",
+			"value": ""
+		},
 		"CONSUMER_SECRET": {
 			"description": "Twitter API Secret (Consumer Secret)",
 			"value": ""
 		},
-        "ACCESS_TOKEN": {
-            "description": "Twitter User Access Token",
-            "value": ""
-        },
-        "ACCESS_TOKEN_SECRET": {
-            "description": "Twitter User Access Token Secret",
-            "value": ""
-        },
-        "BEARER_TOKEN": {
-            "description": "Twitter Bearer Token",
-            "value": ""
-        },
-        "LIST_ID": {
-            "desription": "The list ID found in the URL (can be private or public)",
-            "value": ""
-        },
-        "EXCLUDE_REPLIES": {
-            "description": "Don't RT or like replies to tweets",
-            "value": "true"
-        },
-        "INCLUDE_RETWEETS": {
-            "description": "Retweet users' retweets found in the list",
-            "value": "false"
-        },
-        "INCLUDE_QUOTE_TWEETS": {
-            "description": "Retweet users' quote tweets found in the list",
-            "value": "false"
-        },
-        "KEYWORDS": {
-            "description": "(Case insensitive) Only retweet when these phrases are in the message. Seperate phrases by commas.",
-            "value": "new pod, new podcast, alert, new ep, episode #, ep #, clip"
-        },
-        "FROM_DAYS_AGO": {
-            "description": "The number of days to go back when finding messages",
-            "value": 7
-        },
-        "RETWEET_MESSAGES": {
-            "description": "Enable retweeting of messages",
-            "value": true
-        },
-        "LIKE_MESSAGES": {
-            "description": "Enable liking of messages",
-            "value": true
-        }
-    },
-	"buildpacks": [
-		{
-			"url": "heroku/nodejs"
+		"ACCESS_TOKEN": {
+			"description": "Twitter User Access Token",
+			"value": ""
+		},
+		"ACCESS_TOKEN_SECRET": {
+			"description": "Twitter User Access Token Secret",
+			"value": ""
+		},
+		"BEARER_TOKEN": {
+			"description": "Twitter Bearer Token",
+			"value": ""
+		},
+		"LIST_ID": {
+			"desription": "The list ID found in the URL (can be private or public)",
+			"value": ""
+		},
+		"EXCLUDE_REPLIES": {
+			"description": "Don't RT or like replies to tweets",
+			"value": "true"
+		},
+		"INCLUDE_RETWEETS": {
+			"description": "Retweet users' retweets found in the list",
+			"value": "false"
+		},
+		"INCLUDE_QUOTE_TWEETS": {
+			"description": "Retweet users' quote tweets found in the list",
+			"value": "false"
+		},
+		"KEYWORDS": {
+			"description": "(Case insensitive) Only retweet when these phrases are in the message. Seperate phrases by commas.",
+			"value": "new pod, new podcast, alert, new ep, episode #, ep #, clip"
+		},
+		"FROM_DAYS_AGO": {
+			"description": "The number of days to go back when finding messages",
+			"value": 7
+		},
+		"RETWEET_MESSAGES": {
+			"description": "Enable retweeting of messages",
+			"value": true
+		},
+		"LIKE_MESSAGES": {
+			"description": "Enable liking of messages",
+			"value": true
 		}
-	]
+	}
 }

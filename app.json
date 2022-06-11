@@ -12,46 +12,59 @@
 		"messaging",
 		"productivity"
 	],
-	"image": "heroku/nodejs",
 	"addons": [
 		"scheduler"
 	],
+	"buildpacks": [
+		{
+			"url": "heroku/nodejs"
+		}
+	],
+	"formation": {
+		"worker": {
+			"quantity": 1
+		},
+		"web": {
+			"quantity": 0
+		}
+	},
+	"stack": "heroku-20",
 	"env": {
 		"CONSUMER_KEY": {
 			"description": "Twitter API Key (Consumer Key)",
-			"value": ""
+			"required": true
 		},
 		"CONSUMER_SECRET": {
 			"description": "Twitter API Secret (Consumer Secret)",
-			"value": ""
+			"required": true
 		},
 		"ACCESS_TOKEN": {
 			"description": "Twitter User Access Token",
-			"value": ""
+			"required": true
 		},
 		"ACCESS_TOKEN_SECRET": {
 			"description": "Twitter User Access Token Secret",
-			"value": ""
+			"required": true
 		},
 		"BEARER_TOKEN": {
 			"description": "Twitter Bearer Token",
-			"value": ""
+			"required": true
 		},
 		"LIST_ID": {
 			"desription": "The list ID found in the URL (can be private or public)",
-			"value": ""
+			"required": true
 		},
 		"EXCLUDE_REPLIES": {
 			"description": "Don't RT or like replies to tweets",
-			"value": "true"
+			"value": true
 		},
 		"INCLUDE_RETWEETS": {
 			"description": "Retweet users' retweets found in the list",
-			"value": "false"
+			"value": false
 		},
 		"INCLUDE_QUOTE_TWEETS": {
 			"description": "Retweet users' quote tweets found in the list",
-			"value": "false"
+			"value": false
 		},
 		"KEYWORDS": {
 			"description": "(Case insensitive) Only retweet when these phrases are in the message. Seperate phrases by commas.",

@@ -119,8 +119,10 @@ let findFirstFilteredUserMessage = function(messages) {
   }
 }
 
-let retweetLikeMessages = async function(messages, rt, like) {
+let retweetLikeMessages = async function(messages) {
   try{
+    rt = process.env.RETWEET_MESSAGES;
+    like = process.env.LIKE_MESSAGES;
     let interactions = [];
     for(message of messages) {
       if (rt) {
@@ -152,7 +154,7 @@ let collectMessages = async function() {
 }
 
 collectMessages().then(tweets => {
-  retweetLikeMessages(tweets, true, true);
+  retweetLikeMessages(tweets);
 });
 
 

@@ -13,6 +13,10 @@
             "description": "Twitter API Key (Consumer Key)",
             "value": ""
         },
+		"CONSUMER_SECRET": {
+			"description": "Twitter API Secret (Consumer Secret)",
+			"value": ""
+		},
         "ACCESS_TOKEN": {
             "description": "Twitter User Access Token",
             "value": ""

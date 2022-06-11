@@ -62,5 +62,9 @@
             "value": true
         }
     },
-	"image": "heroku/nodejs"
+	"buildpacks": [
+		{
+			"url": "heroku/nodejs"
+		}
+	]
 }

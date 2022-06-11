@@ -12,6 +12,14 @@
 		"messaging",
 		"productivity"
 	],
+	"formation": {
+		"worker": {
+		  "quantity": 1
+		},
+		"web": {
+		  "quantity": 1
+		}
+	},
 	"addons": [
 		"scheduler"
 	],
@@ -20,14 +28,6 @@
 			"url": "heroku/nodejs"
 		}
 	],
-	"formation": {
-		"worker": {
-			"quantity": 1
-		},
-		"web": {
-			"quantity": 0
-		}
-	},
 	"stack": "heroku-20",
 	"env": {
 		"CONSUMER_KEY": {
@@ -56,15 +56,15 @@
 		},
 		"EXCLUDE_REPLIES": {
 			"description": "Don't RT or like replies to tweets",
-			"value": true
+			"value": "true"
 		},
 		"INCLUDE_RETWEETS": {
 			"description": "Retweet users' retweets found in the list",
-			"value": false
+			"value": "false"
 		},
 		"INCLUDE_QUOTE_TWEETS": {
 			"description": "Retweet users' quote tweets found in the list",
-			"value": false
+			"value": "false"
 		},
 		"KEYWORDS": {
 			"description": "(Case insensitive) Only retweet when these phrases are in the message. Seperate phrases by commas.",
@@ -72,15 +72,15 @@
 		},
 		"FROM_DAYS_AGO": {
 			"description": "The number of days to go back when finding messages",
-			"value": 7
+			"value": "7"
 		},
 		"RETWEET_MESSAGES": {
 			"description": "Enable retweeting of messages",
-			"value": true
+			"value": "true"
 		},
 		"LIKE_MESSAGES": {
 			"description": "Enable liking of messages",
-			"value": true
+			"value": "true"
 		}
 	}
 }
